@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 void main() => runApp(const BytebankApp());
 
@@ -10,7 +9,7 @@ class BytebankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: FormularioTransferencia(),
+        body: ListaTransferencias(),
       ),
     );
   }
@@ -29,11 +28,13 @@ class FormularioTransferencia extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Editor(_controladorCampoNumeroConta,
+            Editor(
+              _controladorCampoNumeroConta,
               dica: '0000',
               rotulo: 'Número da conta',
             ),
-            Editor(_controladorCampoValor,
+            Editor(
+              _controladorCampoValor,
               rotulo: 'Valor',
               dica: '0.00',
               icone: Icons.monetization_on,
@@ -46,13 +47,14 @@ class FormularioTransferencia extends StatelessWidget {
         ));
   }
 
-void _criaTransferencia(BuildContext context) {
-    final int? numeroConta =
-        int.tryParse(_controladorCampoNumeroConta.text);
-    final double? valor =
-        double.tryParse(_controladorCampoValor.text);
+  void _criaTransferencia(BuildContext context) {
+    final int? numeroConta = int.tryParse(_controladorCampoNumeroConta.text);
+    final double? valor = double.tryParse(_controladorCampoValor.text);
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
+      debugPrint('Criando transferẽncia');
+      debugPrint('$transferenciaCriada');
+      Navigator.pop(context, transferenciaCriada);
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text('$transferenciaCriada'),
@@ -103,7 +105,16 @@ class ListaTransferencias extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          final Future<Transferencia?> future =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return FormularioTransferencia();
+          }));
+          future.then((transferenciaRecebida) {
+            debugPrint('chegou no then do future');
+            debugPrint('$transferenciaRecebida');
+          });
+        },
         child: const Icon(Icons.add),
       ),
     );
