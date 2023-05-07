@@ -1,4 +1,4 @@
-# filipov_bytebank
+# Byte Bank
 
 A new Flutter project.
 
